@@ -9,27 +9,53 @@ import (
 )
 
 var inputFile = flag.String("inputFile", "inputs/day2.txt", "File to use")
-var pt2 = flag.Bool("pt2", false, "To run part two of the problem")
 
 func main() {
 	flag.Parse()
 	file, err := ioutil.ReadFile(*inputFile)
 	if err != nil {
-		return
+		panic(err)
 	}
-	answer := solve(string(file))
-	fmt.Println(answer)
+	strArray := strings.Fields(string(file))
+	answer1 := solve(strArray)
+	answer2 := solve2(strArray)
+	fmt.Println(answer1)
+	fmt.Println(answer2)
 }
 
-func solve(s string) string {
+func common(a string, b string) string {
+	var c string
+	for i := 0; i < len(a); i++ {
+		if a[i] == b[i] {
+			c += string(a[i])
+		}
+	}
+	return c
+}
+
+// part 2
+func solve2(strArray []string) string {
+	var id string
+	for i, a := range strArray {
+		for j, b := range strArray {
+			if i != j {
+				temp := common(a, b)
+				if len(temp) > len(id) {
+					id = temp
+				}
+			}
+		}
+	}
+	return id
+}
+
+// part 1
+func solve(file []string) string {
 	Two := 0
 	Three := 0
-
-	file := strings.Split(s, "\n")
 	for _, id := range file {
 		Count := make(map[rune]int)
-		foundTwo := false
-		foundThree := false
+		foundTwo, foundThree := false, false
 		for _, l := range id {
 			Count[l]++
 		}
@@ -45,8 +71,6 @@ func solve(s string) string {
 				break
 			}
 		}
-
 	}
-
 	return strconv.Itoa(Two * Three)
 }
