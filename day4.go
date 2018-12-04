@@ -78,6 +78,19 @@ func main() {
 	sGuard = strings.TrimLeft(sGuard, "#")
 	gID, _ := strconv.Atoi(sGuard)
 	fmt.Println(gID * idx)
+
+	// s2
+	max = 0
+	for _, x := range guards {
+		for i, g := range guardLog[x] {
+			if g > max {
+				max, sGuard, idx = g, x, i
+			}
+		}
+	}
+	sGuard = strings.TrimLeft(sGuard, "#")
+	gID2, _ := strconv.Atoi(sGuard)
+	fmt.Println(gID2 * idx)
 }
 
 func sumAll(i [60]int) int {
