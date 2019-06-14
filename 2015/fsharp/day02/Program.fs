@@ -3,14 +3,12 @@ open System.IO
 
 [<EntryPoint>]
 let main argv =
-    let calcSurfaceArea line = 
-        let splitLine (line : string) = line.Split 'x'
+    let calcSurfaceArea (input : string[]) = 
+        let splitLine (line : string) = 
+            line.Split 'x' |> Array.map System.Int32.Parse
 
-        let calc (splitInts : string[]) = 
-            2*3*Int32.Parse(splitInts.[0]) + 2*4*Int32.Parse(splitInts.[1]) + 2*2*Int32.Parse(splitInts.[2])
-        
-        calc
-        // split line
-    let data = File.ReadAllLines("input")
-
-    0 // return an integer exit code
+        let calc (present : int[]) = 
+            2*present.[0]*present.[1] + 2*present.[1]*present.[2] + 2*present.[2]*present.[0]
+        input |> Seq.map splitLine |> Seq.map calc |> Seq.sum 
+    let data = File.ReadAllLines("input") |> calcSurfaceArea |> printfn "%i"
+    0
