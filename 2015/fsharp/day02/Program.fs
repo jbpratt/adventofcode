@@ -1,14 +1,33 @@
 ﻿open System
 open System.IO
 
+let splitLine (line : string) = 
+    match line.Split 'x' |> Array.map System.Int64.Parse with
+    |[|l; w; h|] -> (l,w,h)
+    |_ -> raise <| System.Exception("Wrong input format")
+
 [<EntryPoint>]
 let main argv =
-    let calcSurfaceArea (input : string[]) = 
-        let splitLine (line : string) = 
-            line.Split 'x' |> Array.map System.Int32.Parse
+    let data = File.ReadAllLines("input") 
 
-        let calc (present : int[]) = 
-            2*present.[0]*present.[1] + 2*present.[1]*present.[2] + 2*present.[2]*present.[0]
-        input |> Seq.map splitLine |> Seq.map calc |> Seq.sum 
-    let data = File.ReadAllLines("input") |> calcSurfaceArea |> printfn "%i"
+    let calcPaper (input : string[]) = 
+        let calcPaperArea (l,w,h) = 
+            let sides = [l*w; w*h; l*h]
+            (List.sumBy ((*)2L) sides) + (List.min sides)
+
+        input |> Seq.map splitLine |> Seq.sumBy calcPaperArea 
+    
+    let calcRibbon (input : string[]) =
+        let calcRibbonLength (l,w,h) =
+            let p = [2L*(l+w);2L*(w+h);2L*(l+h)]
+            (List.min p) + (l*w*h)
+        input |> Seq.map splitLine |> Seq.sumBy calcRibbonLength
+
+    let p1 = data
+            |> calcPaper 
+            |> printfn "Part one %i"
+    
+    let p2 = data
+            |> calcRibbon
+            |> printfn "Part two %i"
     0
